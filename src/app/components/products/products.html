@@ -1,0 +1,595 @@
+
+<!-- ================= HEADER ================= -->
+<header class="shop-header">
+  <div class="header-main">
+    <a class="logo" routerLink="/">
+      <span class="logo-icon">S</span>
+      <span>SPORT<span>ZONE</span></span>
+    </a>
+
+    <div class="header-search">
+      <input
+        type="text"
+        placeholder="Tìm giày, quần áo, phụ kiện..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onFilterChange()"
+      />
+      <button type="button" (click)="onFilterChange()">⌕</button>
+    </div>
+
+    <div class="header-actions">
+      <a routerLink="/login">♙ <span>Tài khoản</span></a>
+
+      <a routerLink="/wishlist" class="header-wishlist">
+        <span class="header-heart">♥</span>
+        <span>Yêu thích</span>
+      </a>
+
+      <a routerLink="/cart">🛒 <span>Giỏ hàng</span></a>
+    </div>
+  </div>
+
+  <nav class="main-nav">
+    <a routerLink="/">TRANG CHỦ</a>
+    <a routerLink="/products" class="active">SẢN PHẨM</a>
+    <a routerLink="/products">GIÀY THỂ THAO</a>
+    <a routerLink="/products">QUẦN ÁO</a>
+    <a routerLink="/products">PHỤ KIỆN</a>
+    <a routerLink="/news">TIN TỨC</a>
+    <a routerLink="/contact">LIÊN HỆ</a>
+  </nav>
+</header>
+
+
+<!-- ================= HERO BANNER ================= -->
+<section class="hero-banner">
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <span class="hero-tag">SPORTZONE COLLECTION 2026</span>
+
+    <h1>
+      BỨT PHÁ GIỚI HẠN<br />
+      CHINH PHỤC ĐAM MÊ
+    </h1>
+
+    <p>
+      Trang bị tốt hơn – Tập luyện mạnh mẽ hơn.
+      Khám phá bộ sưu tập thể thao mới nhất.
+    </p>
+
+    <a href="#product-list" class="hero-button">
+      KHÁM PHÁ NGAY <span>→</span>
+    </a>
+  </div>
+
+  <div class="hero-note">
+    <strong>SPORTZONE</strong>
+    <span>MOVE YOUR LIMITS</span>
+  </div>
+</section>
+
+
+<!-- ================= SERVICE BENEFITS ================= -->
+<section class="benefit-bar">
+  <div class="benefit-item">
+    <span class="benefit-icon">🚚</span>
+    <div>
+      <strong>GIAO HÀNG TOÀN QUỐC</strong>
+      <small>Giao hàng nhanh chóng</small>
+    </div>
+  </div>
+
+  <div class="benefit-item">
+    <span class="benefit-icon">↩</span>
+    <div>
+      <strong>ĐỔI TRẢ DỄ DÀNG</strong>
+      <small>Hỗ trợ đổi trả sản phẩm</small>
+    </div>
+  </div>
+
+  <div class="benefit-item">
+    <span class="benefit-icon">✓</span>
+    <div>
+      <strong>SẢN PHẨM CHẤT LƯỢNG</strong>
+      <small>Cam kết chính hãng</small>
+    </div>
+  </div>
+
+  <div class="benefit-item">
+    <span class="benefit-icon">☎</span>
+    <div>
+      <strong>HỖ TRỢ KHÁCH HÀNG</strong>
+      <small>Tư vấn tận tình</small>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================= MAIN CONTENT ================= -->
+<main class="shop-container">
+
+  <!-- CATEGORY SHORTCUTS -->
+  <section class="category-section">
+    <div class="section-heading">
+      <div>
+        <span class="section-subtitle">DANH MỤC NỔI BẬT</span>
+        <h2>KHÁM PHÁ SẢN PHẨM</h2>
+      </div>
+    </div>
+
+    <div class="category-shortcuts">
+      <button
+        type="button"
+        class="category-shortcut"
+        [class.selected]="selectedCategory === ''"
+        (click)="selectedCategory = ''; onFilterChange()"
+      >
+        <span>🏅</span>
+        <strong>Tất cả</strong>
+      </button>
+
+      <button
+        type="button"
+        class="category-shortcut"
+        *ngFor="let category of categories"
+        [class.selected]="selectedCategory === category"
+        (click)="selectedCategory = category; onFilterChange()"
+      >
+        <span>⚽</span>
+        <strong>{{ category }}</strong>
+      </button>
+    </div>
+  </section>
+
+
+  <!-- ================= PRODUCTS ================= -->
+  <section class="product-section" id="product-list">
+
+    <div class="section-heading product-heading">
+      <div>
+        <span class="section-subtitle">LỰA CHỌN CỦA BẠN</span>
+        <h2>TẤT CẢ SẢN PHẨM</h2>
+        <p>Khám phá những sản phẩm thể thao dành cho bạn.</p>
+      </div>
+
+      <div class="result-count">
+        {{ filteredProducts.length }} sản phẩm
+      </div>
+    </div>
+
+
+    <div class="shop-layout">
+
+      <!-- ================= FILTER SIDEBAR ================= -->
+      <aside class="filter-sidebar">
+
+        <div class="filter-title">
+          <h3><span>☷</span> BỘ LỌC</h3>
+          <button type="button" (click)="resetFilters()">
+            Xóa tất cả
+          </button>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="filter-group">
+          <h4>TÌM KIẾM</h4>
+
+          <input
+            class="filter-search"
+            type="text"
+            placeholder="Tên sản phẩm..."
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onFilterChange()"
+          />
+        </div>
+
+        <!-- CATEGORY -->
+        <div class="filter-group">
+          <h4>DANH MỤC</h4>
+
+          <label class="filter-option">
+            <input
+              type="radio"
+              name="category"
+              value=""
+              [(ngModel)]="selectedCategory"
+              (ngModelChange)="onFilterChange()"
+            />
+            <span>Tất cả danh mục</span>
+          </label>
+
+          <label
+            class="filter-option"
+            *ngFor="let category of categories"
+          >
+            <input
+              type="radio"
+              name="category"
+              [value]="category"
+              [(ngModel)]="selectedCategory"
+              (ngModelChange)="onFilterChange()"
+            />
+            <span>{{ category }}</span>
+          </label>
+        </div>
+
+        <!-- BRAND -->
+        <div class="filter-group">
+          <h4>THƯƠNG HIỆU</h4>
+
+          <label class="filter-option">
+            <input
+              type="radio"
+              name="brand"
+              value=""
+              [(ngModel)]="selectedBrand"
+              (ngModelChange)="onFilterChange()"
+            />
+            <span>Tất cả thương hiệu</span>
+          </label>
+
+          <label
+            class="filter-option"
+            *ngFor="let brand of brands"
+          >
+            <input
+              type="radio"
+              name="brand"
+              [value]="brand"
+              [(ngModel)]="selectedBrand"
+              (ngModelChange)="onFilterChange()"
+            />
+            <span>{{ brand }}</span>
+          </label>
+        </div>
+
+        <!-- PRICE FILTER -->
+        <div class="filter-group">
+          <h4>KHOẢNG GIÁ</h4>
+
+          <label class="filter-option">
+            <input
+              type="radio"
+              name="price"
+              value=""
+              [(ngModel)]="selectedPrice"
+              (ngModelChange)="onFilterChange()"
+            />
+            <span>Tất cả mức giá</span>
+          </label>
+
+          <label class="filter-option">
+            <input
+              type="radio"
+              name="price"
+              value="under500"
+              [(ngModel)]="selectedPrice"
+              (ngModelChange)="onFilterChange()"
+            />
+            <span>Dưới 500.000đ</span>
+          </label>
+
+          <label class="filter-option">
+            <input
+              type="radio"
+              name="price"
+              value="500to1000"
+              [(ngModel)]="selectedPrice"
+              (ngModelChange)="onFilterChange()"
+            />
+            <span>500.000đ – 1 triệu</span>
+          </label>
+
+          <label class="filter-option">
+            <input
+              type="radio"
+              name="price"
+              value="over1000"
+              [(ngModel)]="selectedPrice"
+              (ngModelChange)="onFilterChange()"
+            />
+            <span>Trên 1 triệu</span>
+          </label>
+        </div>
+
+        <!-- SIDEBAR PROMO -->
+        <div class="sidebar-promo">
+          <span>SPORTZONE</span>
+          <h3>MOVE YOUR LIMITS</h3>
+          <p>Sẵn sàng cho mọi thử thách.</p>
+        </div>
+
+      </aside>
+
+
+      <!-- ================= PRODUCT CONTENT ================= -->
+      <div class="products-content">
+
+        <!-- SORT -->
+        <div class="products-toolbar">
+          <span>Sắp xếp:</span>
+
+          <select
+            [(ngModel)]="sortOption"
+            (ngModelChange)="onFilterChange()"
+          >
+            <option value="default">Mặc định</option>
+            <option value="price-asc">Giá thấp đến cao</option>
+            <option value="price-desc">Giá cao đến thấp</option>
+            <option value="name">Tên sản phẩm A - Z</option>
+          </select>
+        </div>
+
+
+        <!-- LOADING -->
+        <div class="loading-box" *ngIf="loading">
+          <div class="loader"></div>
+          <p>Đang tải sản phẩm...</p>
+        </div>
+
+
+        <!-- ERROR -->
+        <div class="empty-box" *ngIf="!loading && errorMessage">
+          <p>{{ errorMessage }}</p>
+
+          <button type="button" (click)="loadProducts()">
+            Thử lại
+          </button>
+        </div>
+
+
+        <!-- EMPTY PRODUCTS -->
+        <div
+          class="empty-box"
+          *ngIf="!loading && !errorMessage && filteredProducts.length === 0"
+        >
+          <span>🔎</span>
+          <h3>Không tìm thấy sản phẩm</h3>
+          <p>Hãy thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.</p>
+
+          <button type="button" (click)="resetFilters()">
+            Xóa bộ lọc
+          </button>
+        </div>
+
+<!-- ================= PRODUCT GRID ================= -->
+<div
+  class="product-grid"
+  *ngIf="
+    !loading &&
+    !errorMessage &&
+    paginatedProducts.length > 0
+  "
+>
+  <article
+    class="product-card"
+    *ngFor="let product of paginatedProducts; trackBy: trackById"
+  >
+
+            <!-- PRODUCT IMAGE -->
+            <div class="product-image">
+
+              <a
+                [routerLink]="['/products', product._id]"
+                class="product-detail-link"
+                [attr.aria-label]="'Xem chi tiết ' + product.name"
+              >
+                <img
+                  [src]="product.image || 'https://placehold.co/500x500?text=SPORTZONE'"
+                  [alt]="product.name"
+                  (error)="$any($event.target).src='https://placehold.co/500x500?text=SPORTZONE'"
+                />
+              </a>
+
+              <!-- SALE BADGE -->
+              <span
+                class="sale-badge"
+                *ngIf="hasSale(product)"
+              >
+                -{{ getDiscount(product) }}%
+              </span>
+
+              <!-- OUT OF STOCK BADGE -->
+              <span
+                class="stock-badge"
+                *ngIf="product.stock <= 0"
+              >
+                HẾT HÀNG
+              </span>
+
+              <!-- WISHLIST BUTTON -->
+              <button
+                type="button"
+                class="wishlist-btn"
+                [class.active]="isFavorite(product._id)"
+                (click)="toggleFavorite(product)"
+                [attr.aria-label]="isFavorite(product._id) ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'"
+                [attr.title]="isFavorite(product._id) ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'"
+              >
+                {{ isFavorite(product._id) ? '♥' : '♡' }}
+              </button>
+
+            </div>
+
+
+            <!-- PRODUCT INFORMATION -->
+            <div class="product-info">
+
+              <!-- BRAND -->
+              <span class="product-brand">
+                {{ product.brand || 'SPORTZONE' }}
+              </span>
+
+              <!-- PRODUCT NAME -->
+              <h3>
+                <a
+                  [routerLink]="['/products', product._id]"
+                  class="product-name-link"
+                >
+                  {{ product.name }}
+                </a>
+              </h3>
+
+              <!-- PRICE -->
+              <div class="product-price">
+                <strong>
+                  {{ getDisplayPrice(product) | currency:'VND':'symbol':'1.0-0':'vi' }}
+                </strong>
+
+                <del *ngIf="hasSale(product)">
+                  {{ product.price | currency:'VND':'symbol':'1.0-0':'vi' }}
+                </del>
+              </div>
+
+              <!-- SIZES -->
+              <div
+                class="product-variants"
+                *ngIf="product.sizes?.length"
+              >
+                <span class="variant-label">Size:</span>
+
+                <div class="variant-list">
+                  <span
+                    class="size-item"
+                    *ngFor="let size of product.sizes"
+                  >
+                    {{ size }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- COLORS -->
+              <div
+                class="product-variants"
+                *ngIf="product.colors?.length"
+              >
+                <span class="variant-label">Màu sắc:</span>
+
+                <div class="color-list">
+                  <span
+                    class="color-item"
+                    *ngFor="let color of product.colors"
+                    [title]="color"
+                  >
+                    {{ color }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- DETAIL BUTTON -->
+              <a
+                [routerLink]="['/products', product._id]"
+                class="detail-button"
+              >
+                XEM CHI TIẾT
+                <span>→</span>
+              </a>
+
+            </div>
+
+          </article>
+
+        </div>
+
+
+        <!-- ================= PAGINATION ================= -->
+        <div
+          class="pagination"
+          *ngIf="!loading && !errorMessage && totalPages > 1"
+        >
+
+          <button
+            type="button"
+            (click)="changePage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            ‹
+          </button>
+
+          <button
+            type="button"
+            *ngFor="let page of pages"
+            [class.active]="currentPage === page"
+            (click)="changePage(page)"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            type="button"
+            (click)="changePage(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+          >
+            ›
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ================= PROMOTION BANNER ================= -->
+  <section class="promotion-banner">
+    <div>
+      <span>SPORTZONE SPECIAL</span>
+      <h2>SẴN SÀNG BỨT PHÁ?</h2>
+      <p>Chọn trang bị phù hợp và bắt đầu hành trình của bạn.</p>
+    </div>
+
+    <a href="#product-list">
+      MUA SẮM NGAY →
+    </a>
+  </section>
+
+</main>
+
+
+<!-- ================= FOOTER ================= -->
+<footer class="shop-footer">
+
+  <div class="footer-content">
+
+    <div class="footer-about">
+      <a class="logo footer-logo" routerLink="/">
+        <span class="logo-icon">S</span>
+        <span>SPORT<span>ZONE</span></span>
+      </a>
+
+      <p>
+        SPORTZONE – Đồng hành cùng bạn trên hành trình
+        rèn luyện sức khỏe và chinh phục đam mê thể thao.
+      </p>
+    </div>
+
+    <div class="footer-column">
+      <h4>VỀ SPORTZONE</h4>
+      <a routerLink="/">Giới thiệu</a>
+      <a routerLink="/news">Tin tức</a>
+      <a routerLink="/contact">Liên hệ</a>
+    </div>
+
+    <div class="footer-column">
+      <h4>HỖ TRỢ</h4>
+      <a routerLink="/contact">Chính sách đổi trả</a>
+      <a routerLink="/contact">Chính sách giao hàng</a>
+      <a routerLink="/contact">Hướng dẫn mua hàng</a>
+    </div>
+
+    <div class="footer-column">
+      <h4>LIÊN HỆ</h4>
+      <p>Hotline: 1900 0000</p>
+      <p>Email: support@sportzone.vn</p>
+      <p>Thời gian: 8:00 – 21:00</p>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    © 2026 SPORTZONE. All rights reserved.
+  </div>
+
+</footer>

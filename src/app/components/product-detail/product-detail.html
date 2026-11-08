@@ -1,0 +1,299 @@
+
+<!-- TRẠNG THÁI ĐANG TẢI -->
+<div *ngIf="loading" class="loading-box">
+  <div class="spinner"></div>
+  <p>Đang tải thông tin sản phẩm...</p>
+</div>
+
+<!-- TRẠNG THÁI LỖI -->
+<div *ngIf="!loading && errorMessage" class="error-box">
+  <span>!</span>
+  <p>{{ errorMessage }}</p>
+  <a routerLink="/products">Quay lại danh sách sản phẩm</a>
+</div>
+
+<!-- CHI TIẾT SẢN PHẨM -->
+<div class="detail-page" *ngIf="!loading && !errorMessage && product">
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a routerLink="/">Trang chủ</a>
+    <span>/</span>
+    <a routerLink="/products">Sản phẩm</a>
+    <span>/</span>
+    <strong>{{ product.name }}</strong>
+  </div>
+
+  <!-- PRODUCT CONTENT -->
+  <section class="product-detail-container">
+
+    <!-- ẢNH SẢN PHẨM -->
+    <div class="product-gallery">
+      <div class="main-image">
+
+        <span
+          class="sale-label"
+          *ngIf="product.salePrice > 0 && product.salePrice < product.price">
+          SALE
+        </span>
+
+        <img
+          [src]="product.image || 'https://placehold.co/600x600?text=SPORTZONE'"
+          [alt]="product.name"
+          (error)="$any($event.target).src='https://placehold.co/600x600?text=SPORTZONE'">
+      </div>
+
+      <div class="gallery-caption">
+        <span>
+          <i class="bi bi-shield-check"></i>
+          Sản phẩm chính hãng
+        </span>
+
+        <span>
+          <i class="bi bi-box-seam"></i>
+          Đóng gói cẩn thận
+        </span>
+      </div>
+    </div>
+
+    <!-- THÔNG TIN SẢN PHẨM -->
+    <div class="product-information">
+
+      <div class="product-brand">
+        {{ product.brand || 'SPORTZONE' }}
+      </div>
+
+      <h1>{{ product.name }}</h1>
+
+      <!-- GIÁ SẢN PHẨM -->
+      <div class="product-price">
+
+        <span class="current-price">
+          {{
+            (product.salePrice > 0 && product.salePrice < product.price
+              ? product.salePrice
+              : product.price)
+              | currency:'VND':'symbol':'1.0-0':'vi'
+          }}
+        </span>
+
+
+      </div>
+
+      <!-- MÔ TẢ -->
+      <div class="product-description">
+        <h3>Mô tả sản phẩm</h3>
+        <p>
+          {{ product.description || 'Sản phẩm thể thao chất lượng, phù hợp cho luyện tập và hoạt động hằng ngày.' }}
+        </p>
+      </div>
+
+      <div class="product-divider"></div>
+
+      <!-- CHỌN SIZE: LUÔN HIỂN THỊ -->
+      <div class="option-group">
+        <h3>
+          Kích thước:
+          <strong>{{ selectedSize || 'Chưa chọn' }}</strong>
+        </h3>
+
+        <div class="option-list" *ngIf="product.sizes?.length; else noSize">
+          <button
+            type="button"
+            *ngFor="let size of product.sizes"
+            [class.active]="selectedSize === size"
+            (click)="selectSize(size)">
+            {{ size }}
+          </button>
+        </div>
+
+        <ng-template #noSize>
+          <span class="option-empty">Chưa có kích thước</span>
+        </ng-template>
+      </div>
+
+      <!-- CHỌN MÀU: LUÔN HIỂN THỊ -->
+      <div class="option-group">
+        <h3>
+          Màu sắc:
+          <strong>{{ selectedColor || 'Chưa chọn' }}</strong>
+        </h3>
+
+        <div
+          class="option-list color-list"
+          *ngIf="product.colors?.length; else noColor">
+          <button
+            type="button"
+            *ngFor="let color of product.colors"
+            [class.active]="selectedColor === color"
+            (click)="selectColor(color)">
+            {{ color }}
+          </button>
+        </div>
+
+        <ng-template #noColor>
+          <span class="option-empty">Chưa có màu sắc</span>
+        </ng-template>
+      </div>
+
+      
+
+      <!-- CHỌN SỐ LƯỢNG -->
+      <div class="quantity-group" *ngIf="product.stock > 0">
+
+        <h3>Số lượng:</h3>
+
+        <div class="quantity-control">
+
+          <button
+            type="button"
+            (click)="decreaseQuantity()"
+            [disabled]="quantity <= 1">
+            <i class="bi bi-dash"></i>
+          </button>
+
+          <input
+            type="number"
+            min="1"
+            step="1"
+            [max]="product.stock"
+            [value]="quantity"
+            (input)="onQuantityChange($any($event.target).value)"
+            (blur)="$any($event.target).value = quantity"
+            required
+          >
+
+          <button
+            type="button"
+            (click)="increaseQuantity()"
+            [disabled]="quantity >= product.stock">
+            <i class="bi bi-plus"></i>
+          </button>
+
+        </div>
+
+        <small class="quantity-note">
+          Tối đa {{ product.stock }} sản phẩm
+        </small>
+
+      </div>
+
+      <!-- CÁC NÚT CHỨC NĂNG -->
+      <div class="product-actions">
+
+        <!-- NÚT YÊU THÍCH -->
+        <button
+          type="button"
+          class="detail-wishlist-btn"
+          [class.active]="isFavorite()"
+          (click)="toggleFavorite()">
+
+          <i
+            class="bi"
+            [ngClass]="isFavorite() ? 'bi-heart-fill' : 'bi-heart'">
+          </i>
+
+          {{ isFavorite() ? 'Đã yêu thích' : 'Yêu thích' }}
+
+        </button>
+
+        <!-- QUAY LẠI SẢN PHẨM -->
+        <a routerLink="/products" class="back-button">
+          <i class="bi bi-arrow-left"></i>
+          Tiếp tục mua sắm
+        </a>
+
+      </div>
+
+      <!-- CAM KẾT -->
+      <div class="service-benefits">
+
+        <div>
+          <i class="bi bi-truck"></i>
+          <span>
+            <strong>Giao hàng toàn quốc</strong>
+            <small>Giao hàng nhanh chóng</small>
+          </span>
+        </div>
+
+        <div>
+          <i class="bi bi-arrow-repeat"></i>
+          <span>
+            <strong>Đổi trả dễ dàng</strong>
+            <small>Hỗ trợ đổi trả theo chính sách</small>
+          </span>
+        </div>
+
+        <div>
+          <i class="bi bi-shield-check"></i>
+          <span>
+            <strong>Chất lượng đảm bảo</strong>
+            <small>Cam kết sản phẩm chính hãng</small>
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- THÔNG TIN BỔ SUNG -->
+  <section class="product-extra">
+
+    <div class="extra-heading">
+      <span>THÔNG TIN SẢN PHẨM</span>
+      <h2>Chi tiết sản phẩm</h2>
+      <p>Khám phá thêm thông tin về sản phẩm tại SPORTZONE.</p>
+    </div>
+
+    <div class="extra-content">
+
+      <div class="extra-row">
+        <span>Tên sản phẩm</span>
+        <strong>{{ product.name }}</strong>
+      </div>
+
+      <div class="extra-row">
+        <span>Thương hiệu</span>
+        <strong>{{ product.brand || 'SPORTZONE' }}</strong>
+      </div>
+
+      <div class="extra-row">
+        <span>Danh mục</span>
+        <strong>{{ product.categoryId }}</strong>
+      </div>
+
+      <div class="extra-row">
+        <span>Kích thước</span>
+        <strong>{{ product.sizes?.join(', ') || 'Chưa cập nhật' }}</strong>
+      </div>
+
+      <div class="extra-row">
+        <span>Màu sắc</span>
+        <strong>{{ product.colors?.join(', ') || 'Chưa cập nhật' }}</strong>
+      </div>
+
+      <div class="extra-row">
+        <span>Tình trạng</span>
+        <strong>{{ product.stock > 0 ? 'Còn hàng' : 'Hết hàng' }}</strong>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BANNER -->
+  <section class="detail-banner">
+
+    <div>
+      <span>SPORTZONE</span>
+      <h2>CHINH PHỤC MỌI GIỚI HẠN</h2>
+      <p>Trang bị tốt hơn – Tập luyện tự tin hơn.</p>
+    </div>
+
+    <a routerLink="/products">
+      Khám phá sản phẩm
+    </a>
+
+  </section>
+
+</div>
